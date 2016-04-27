@@ -1,4 +1,4 @@
-(ns modern-cljs.shopping
+(ns bhasha.typing
   (:require [domina.core :refer [by-id value set-value!]]
             [domina.events :refer [listen!]]))
 
