@@ -1,6 +1,8 @@
 (ns bhasha.typing
   (:require [domina.core :refer [by-id value set-value!]]
-            [domina.events :refer [listen!]]))
+            [domina.events :refer [listen!]]
+			[domina.events :refer [dispatch!]]
+))
 			
 (enable-console-print!)			
 
@@ -18,7 +20,13 @@
             )
 		)
 		(println "bhasha textArea keyPressed! keyChar: " keyChar ", keyCode: " keyCode)
-
+		
+		;;(set! (.-charCode evt) +65)
+		
+		;;new KeyEvent(keyCode, charCode, repeat, browserEvent)
+		
+		;;(dispatch! (by-id "bhashaTextArea") :KeyEvent {:keyCode keyCode, :charCode 65, :repeat (:repeat evt), :browserEvent (:browserEvent evt)})
+		
 	)
 	
 	
