@@ -3,8 +3,7 @@
 goog.provide('bhasha.indic.IndicEditor');
 goog.provide('bhasha.indic.attachEditor');
 
-goog.require('goog.dom');
-goog.require('goog.ui.Zippy');
+goog.require('goog.events.InputHandler');
 
 
 
@@ -32,10 +31,9 @@ bhasha.indic.IndicEditor = function(indicTextEditor) {
  * Attaches a KeyListener to the text-area, so that English chars are replaced by Indic chars as the user types
  */
 bhasha.indic.IndicEditor.prototype.attachIndicListener = function() {
-  goog.events.listen(this.indicTextEditor, goog.events.EventType.KEYPRESS,
-      this.replaceWithIndicChars, false, this);
-  // Attach the Zippy behavior.
-  //this.zippy = new goog.ui.Zippy(this.headerElement, this.contentContainer);
+  //goog.events.listen(this.indicTextEditor, goog.events.EventType.KEYPRESS, this.replaceWithIndicChars, true, this);
+ var inputHandler = new goog.events.InputHandler(this.indicTextEditor);
+  inputHandler.handleEvent = this.replaceWithIndicChars;
 };
 
 
@@ -44,8 +42,9 @@ bhasha.indic.IndicEditor.prototype.attachIndicListener = function() {
  * @param {goog.events.Event} e The event object.
  */
 bhasha.indic.IndicEditor.prototype.replaceWithIndicChars = function(e) {
-  console.log("***replaceWithIndicChars " + e.charCode);
-  e.charCode=65;
+  console.log("***replaceWithIndicChars " + e.keyCode);
+  e.stopPropagation();
+  //e.setCharCode(65);
 };
 
 
