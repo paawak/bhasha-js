@@ -32,20 +32,20 @@ bhasha.indic.IndicEditor = function(indicTextEditor) {
  * Attaches a KeyListener to the text-area, so that English chars are replaced by Indic chars as the user types
  */
 bhasha.indic.IndicEditor.prototype.attachIndicListener = function() {
-  goog.events.listen(this.indicTextEditor, goog.events.EventType.CLICK,
+  goog.events.listen(this.indicTextEditor, goog.events.EventType.KEYPRESS,
       this.replaceWithIndicChars, false, this);
   // Attach the Zippy behavior.
   //this.zippy = new goog.ui.Zippy(this.headerElement, this.contentContainer);
 };
 
 
-// NEW: Implements our Save button.
 /**
  * Event handler for KeyPressed. Replaces English chars with Indic chars
  * @param {goog.events.Event} e The event object.
  */
 bhasha.indic.IndicEditor.prototype.replaceWithIndicChars = function(e) {
-  alert("click");
+  console.log("***replaceWithIndicChars " + e.charCode);
+  e.charCode=65;
 };
 
 
