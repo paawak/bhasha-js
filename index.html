@@ -5,18 +5,14 @@
     <script src="js/hello.js"></script>
   </head>
   <body>
-	<h1>Bangla Text</h1>
+	<h1>Indic Text Editor</h1>
 	<div>
-		<textarea id="banglaText" rows="20" cols="100"></textarea>
+		<textarea id="indicTextEditor" rows="20" cols="100"></textarea>
 	</div>
 <script>
-function main() {
-  var noteData = [
-    {'title': 'Note 1', 'content': 'Content of Note 1'},
-    {'title': 'Note 2', 'content': 'Content of Note 2'}];
-
-  var noteListElement = document.getElementById('banglaText');
-  var notes = tutorial.notepad.makeNotes(noteData, noteListElement);
+function main() {  
+  var indicTextEditor = document.getElementById('indicTextEditor');
+  bhasha.indic.attachEditor(indicTextEditor);
 }
 main();
 </script>	
