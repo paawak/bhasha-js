@@ -1,20 +1,18 @@
 <!doctype html>
 <html>
   <head>
-    <script src="closure-library/closure/goog/base.js"></script>
-    <script src="js/hello.js"></script>
+    <script type="text/javascript" src="js/jquery-1.2.6.min.js"></script>    
   </head>
   <body>
 	<h1>Indic Text Editor</h1>
 	<div>
 		<textarea id="indicTextEditor" rows="20" cols="100"></textarea>
 	</div>
-<script>
-function main() {  
-  var indicTextEditor = document.getElementById('indicTextEditor');
-  bhasha.indic.attachEditor(indicTextEditor);
-}
-main();
-</script>	
+	<script type="text/javascript">
+	$('#indicTextEditor').bind('input propertychange', function() {
+
+      alert("hhh");
+});
+	</script>
   </body>
 </html>
