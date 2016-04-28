@@ -1,6 +1,6 @@
 // Copyright 2008 Google Inc. All Rights Reserved.
 
-goog.provide('tutorial.notepad.Note');
+goog.provide('bhasha.indic.IndicEditor');
 goog.provide('bhasha.indic.attachEditor');
 
 goog.require('goog.dom');
@@ -9,32 +9,31 @@ goog.require('goog.ui.Zippy');
 
 
 /**
- * Iterates over a list of note data objects, creates a
- * tutorial.Note instance for each one, and tells the instance to build
- * its DOM structure.
+ * Entry point:
+ * Attaches a KeyListener to the text-area, so that English chars are replaced by Indic chars as the user types
  * @param {Element} indicTextEditor The text-area where Indic Text is to be typed.
  */
 bhasha.indic.attachEditor = function(indicTextEditor) {
 	//alert("hhhh: " + noteContainer);
-    var note = new tutorial.notepad.Note(indicTextEditor);
-	note.makeNoteDom();    
+    var indicEditor = new bhasha.indic.IndicEditor(indicTextEditor);
+	indicEditor.attachIndicListener();    
 };
 
 /**
- * Manages the data and interface for a single note.
+ * Manages the data and interface for a single text-area.
  * @param {Element} indicTextEditor The text-area where Indic Text is to be typed. 
  * @constructor
  */
-tutorial.notepad.Note = function(indicTextEditor) {
+bhasha.indic.IndicEditor = function(indicTextEditor) {
   this.indicTextEditor = indicTextEditor;
 };
 
 /**
- * Creates the DOM structure for the note and adds it to the document.
+ * Attaches a KeyListener to the text-area, so that English chars are replaced by Indic chars as the user types
  */
-tutorial.notepad.Note.prototype.makeNoteDom = function() {
+bhasha.indic.IndicEditor.prototype.attachIndicListener = function() {
   goog.events.listen(this.indicTextEditor, goog.events.EventType.CLICK,
-      this.save, false, this);
+      this.replaceWithIndicChars, false, this);
   // Attach the Zippy behavior.
   //this.zippy = new goog.ui.Zippy(this.headerElement, this.contentContainer);
 };
@@ -42,11 +41,10 @@ tutorial.notepad.Note.prototype.makeNoteDom = function() {
 
 // NEW: Implements our Save button.
 /**
- * Event handler for clicks on the Save button. Sets the content of the Note
- * to the text in the editor and hides the editor.
+ * Event handler for KeyPressed. Replaces English chars with Indic chars
  * @param {goog.events.Event} e The event object.
  */
-tutorial.notepad.Note.prototype.save = function(e) {
+bhasha.indic.IndicEditor.prototype.replaceWithIndicChars = function(e) {
   alert("click");
 };
 
