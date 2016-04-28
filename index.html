@@ -7,7 +7,18 @@
   <body>
 	<h1>Bangla Text</h1>
 	<div>
-		<textarea id="banglaText" rows="20" cols="100" onload="sayHi()"></textarea>
+		<textarea id="banglaText" rows="20" cols="100"></textarea>
 	</div>
+<script>
+function main() {
+  var noteData = [
+    {'title': 'Note 1', 'content': 'Content of Note 1'},
+    {'title': 'Note 2', 'content': 'Content of Note 2'}];
+
+  var noteListElement = document.getElementById('banglaText');
+  var notes = tutorial.notepad.makeNotes(noteData, noteListElement);
+}
+main();
+</script>	
   </body>
 </html>
