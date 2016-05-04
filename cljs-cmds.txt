@@ -1,0 +1,2 @@
+to compile clojurescript into javascript using boot:
+boot cljs target -d target
