@@ -35,17 +35,7 @@ bhasha.indic.IndicEditor.prototype.attachIndicListener = function() {
  //var inputHandler = new goog.events.InputHandler(this.indicTextEditor);
   //inputHandler.handleEvent = this.replaceWithIndicChars;
   var keyHandler = new goog.events.KeyHandler(this.indicTextEditor, false);
-  goog.events.listen(keyHandler,
-    goog.events.KeyHandler.EventType.KEY,
-    function(keyEvent) {
-      var  indicTextEditor = keyEvent.target;
-	  var selectionStart =  indicTextEditor.selectionStart;
-	  var selectionEnd =  indicTextEditor.selectionEnd;
-	  console.log("***selectionStart: " + selectionStart + ", selectionEnd: " + selectionEnd + ", keyEvent.keyCode: " + keyEvent.keyCode);
-      if (keyEvent.keyCode == goog.events.KeyCodes.ONE) {		
-		console.log("***replaceWithIndicChars " + keyEvent.keyCode);
-      }
-    });
+  goog.events.listen(keyHandler, goog.events.KeyHandler.EventType.KEY, this.replaceWithIndicChars);
 };
 
 
@@ -53,10 +43,14 @@ bhasha.indic.IndicEditor.prototype.attachIndicListener = function() {
  * Event handler for KeyPressed. Replaces English chars with Indic chars
  * @param {goog.events.Event} e The event object.
  */
-bhasha.indic.IndicEditor.prototype.replaceWithIndicChars = function(e) {
-  console.log("***replaceWithIndicChars " + e.keyCode);
-  e.stopPropagation();
-  //e.setCharCode(65);
+bhasha.indic.IndicEditor.prototype.replaceWithIndicChars = function(keyEvent) {
+	  var  indicTextEditor = keyEvent.target;
+	  var selectionStart =  indicTextEditor.selectionStart;
+	  var selectionEnd =  indicTextEditor.selectionEnd;
+	  console.log("***selectionStart: " + selectionStart + ", selectionEnd: " + selectionEnd + ", keyEvent.keyCode: " + keyEvent.keyCode);
+      if (keyEvent.keyCode == goog.events.KeyCodes.ONE) {		
+		console.log("***replaceWithIndicChars " + keyEvent.keyCode);
+      }
 };
 
 
