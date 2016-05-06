@@ -31,13 +31,24 @@ bhasha.indic.IndicEditor = function(indicTextEditor) {
  * Attaches a KeyListener to the text-area, so that English chars are replaced by Indic chars as the user types
  */
 bhasha.indic.IndicEditor.prototype.attachIndicListener = function() {
-  //goog.events.listen(this.indicTextEditor, goog.events.EventType.KEYPRESS, this.replaceWithIndicChars, true, this);
- //var inputHandler = new goog.events.InputHandler(this.indicTextEditor);
-  //inputHandler.handleEvent = this.replaceWithIndicChars;
   var keyHandler = new goog.events.KeyHandler(this.indicTextEditor, false);
   goog.events.listen(keyHandler, goog.events.KeyHandler.EventType.KEY, this.replaceWithIndicChars);
 };
 
+var indicCharMap = {
+	'y' : '\u09df',
+	'0' : '\u09e6', 
+	'1' : '\u09e7', 
+	'2' : '\u09e8', 
+	'3' : '\u09e9', 
+	'4' : '\u09ea',
+	'5' : '\u09eb', 
+	'6' : '\u09ec', 
+	'7' : '\u09ed', 
+	'8' : '\u09ee', 
+	'9' : '\u09ef', 
+	'.' : '\u09f7'
+};
 
 /**
  * Event handler for KeyPressed. Replaces English chars with Indic chars
@@ -47,9 +58,11 @@ bhasha.indic.IndicEditor.prototype.replaceWithIndicChars = function(keyEvent) {
 	  var  indicTextEditor = keyEvent.target;
 	  var selectionStart =  indicTextEditor.selectionStart;
 	  var selectionEnd =  indicTextEditor.selectionEnd;
-	  console.log("***selectionStart: " + selectionStart + ", selectionEnd: " + selectionEnd + ", keyEvent.keyCode: " + keyEvent.keyCode);
-      if (keyEvent.keyCode == goog.events.KeyCodes.ONE) {		
-		console.log("***replaceWithIndicChars " + keyEvent.keyCode);
+	  var charTyped = keyEvent.charCode;
+	  var indicChar = indicCharMap[String.fromCharCode(charTyped)];
+	  console.log("***selectionStart: " + selectionStart + ", selectionEnd: " + selectionEnd + ", charTyped: " + charTyped + ", indicChar: " + indicChar);
+      if (charTyped == goog.events.KeyCodes.ONE) {		
+		console.log("***replaceWithIndicChars " + charTyped);
       }
 };
 
