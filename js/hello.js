@@ -3,7 +3,7 @@
 goog.provide('bhasha.indic.IndicEditor');
 goog.provide('bhasha.indic.attachEditor');
 
-goog.require('goog.events.InputHandler');
+goog.require('goog.events.KeyHandler');
 
 
 
@@ -32,8 +32,20 @@ bhasha.indic.IndicEditor = function(indicTextEditor) {
  */
 bhasha.indic.IndicEditor.prototype.attachIndicListener = function() {
   //goog.events.listen(this.indicTextEditor, goog.events.EventType.KEYPRESS, this.replaceWithIndicChars, true, this);
- var inputHandler = new goog.events.InputHandler(this.indicTextEditor);
-  inputHandler.handleEvent = this.replaceWithIndicChars;
+ //var inputHandler = new goog.events.InputHandler(this.indicTextEditor);
+  //inputHandler.handleEvent = this.replaceWithIndicChars;
+  var keyHandler = new goog.events.KeyHandler(this.indicTextEditor, false);
+  goog.events.listen(keyHandler,
+    goog.events.KeyHandler.EventType.KEY,
+    function(keyEvent) {
+      var  indicTextEditor = keyEvent.target;
+	  var selectionStart =  indicTextEditor.selectionStart;
+	  var selectionEnd =  indicTextEditor.selectionEnd;
+	  console.log("***selectionStart: " + selectionStart + ", selectionEnd: " + selectionEnd + ", keyEvent.keyCode: " + keyEvent.keyCode);
+      if (keyEvent.keyCode == goog.events.KeyCodes.ONE) {		
+		console.log("***replaceWithIndicChars " + keyEvent.keyCode);
+      }
+    });
 };
 
 
