@@ -4,6 +4,7 @@ goog.provide('bhasha.indic.IndicEditor');
 goog.provide('bhasha.indic.attachEditor');
 
 goog.require('goog.events.KeyHandler');
+goog.require('goog.events.KeyEvent');
 
 
 
@@ -55,7 +56,7 @@ var indicCharMap = {
  * @param {goog.events.Event} e The event object.
  */
 bhasha.indic.IndicEditor.prototype.replaceWithIndicChars = function(keyEvent) {
-	  var  indicTextEditor = keyEvent.target;
+	  var indicTextEditor = keyEvent.target;
 	  var selectionStart =  indicTextEditor.selectionStart;
 	  var selectionEnd =  indicTextEditor.selectionEnd;
 	  var charTyped = keyEvent.charCode;
@@ -64,6 +65,11 @@ bhasha.indic.IndicEditor.prototype.replaceWithIndicChars = function(keyEvent) {
       if (charTyped == goog.events.KeyCodes.ONE) {		
 		console.log("***trying to stop propagation ");
 		keyEvent.preventDefault();
+		//create a new dummy key-event
+		//var listener = new goog.events.Listener(null, null, indicTextEditor, "keypress", false, null);
+		//var dummyKeyEvent = new goog.events.KeyEvent(goog.events.KeyCodes.TWO, goog.events.KeyCodes.TWO, true, new goog.events.BrowserEvent(new goog.events.Event("keypress", indicTextEditor), indicTextEditor));
+		//goog.events.dispatchEvent(listener, dummyKeyEvent);
+		//keyEvent.init(dummyKeyEvent, indicTextEditor);
       }
 };
 
