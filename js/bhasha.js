@@ -31,7 +31,7 @@ bhasha.indic.IndicEditor = function(indicTextEditor) {
  * Attaches a KeyListener to the text-area, so that English chars are replaced by Indic chars as the user types
  */
 bhasha.indic.IndicEditor.prototype.attachIndicListener = function() {
-  var keyHandler = new goog.events.KeyHandler(this.indicTextEditor, false);
+  var keyHandler = new goog.events.KeyHandler(this.indicTextEditor, true);
   goog.events.listen(keyHandler, goog.events.KeyHandler.EventType.KEY, this.replaceWithIndicChars);
 };
 
@@ -62,7 +62,8 @@ bhasha.indic.IndicEditor.prototype.replaceWithIndicChars = function(keyEvent) {
 	  var indicChar = indicCharMap[String.fromCharCode(charTyped)];
 	  console.log("***selectionStart: " + selectionStart + ", selectionEnd: " + selectionEnd + ", charTyped: " + charTyped + ", indicChar: " + indicChar);
       if (charTyped == goog.events.KeyCodes.ONE) {		
-		console.log("***replaceWithIndicChars " + charTyped);
+		console.log("***trying to stop propagation ");
+		keyEvent.preventDefault();
       }
 };
 
