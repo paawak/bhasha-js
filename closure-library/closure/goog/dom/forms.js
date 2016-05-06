@@ -303,9 +303,7 @@ goog.dom.forms.getInputChecked_ = function(el) {
  */
 goog.dom.forms.getSelectSingle_ = function(el) {
   var selectedIndex = /** @type {!HTMLSelectElement} */ (el).selectedIndex;
-  return selectedIndex >= 0 ?
-      /** @type {!HTMLSelectElement} */ (el).options[selectedIndex].value :
-      null;
+  return selectedIndex >= 0 ? el.options[selectedIndex].value : null;
 };
 
 

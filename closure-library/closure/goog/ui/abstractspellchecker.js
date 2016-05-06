@@ -318,6 +318,19 @@ goog.ui.AbstractSpellChecker.prototype.getSpellCheck = function() {
   return this.spellCheck;
 };
 
+
+/**
+ * @return {goog.spell.SpellCheck} The handler used for caching and lookups.
+ * @override
+ * @suppress {checkTypes} This method makes no sense. It overrides
+ *     Component's getHandler with something different.
+ * @deprecated Use #getSpellCheck instead.
+ */
+goog.ui.AbstractSpellChecker.prototype.getHandler = function() {
+  return this.getSpellCheck();
+};
+
+
 /**
  * Sets the spell checker used for caching and lookups.
  * @param {goog.spell.SpellCheck} spellCheck The handler used for caching and
@@ -1017,10 +1030,10 @@ goog.ui.AbstractSpellChecker.prototype.processTextAsync = function(node, text) {
     if (word) {
       var status = this.spellCheck.checkWord(word);
       if (status != goog.spell.SpellCheck.WordStatus.VALID) {
-        var precedingText =
+        var preceedingText =
             text.substr(stringSegmentStart, result.index - stringSegmentStart);
-        if (precedingText) {
-          this.processRange(node, precedingText);
+        if (preceedingText) {
+          this.processRange(node, preceedingText);
         }
         stringSegmentStart = result.index + word.length;
         this.processWord(node, word, status);
@@ -1070,10 +1083,10 @@ goog.ui.AbstractSpellChecker.prototype.continueAsyncProcessing = function() {
     if (word) {
       var status = this.spellCheck.checkWord(word);
       if (status != goog.spell.SpellCheck.WordStatus.VALID) {
-        var precedingText =
+        var preceedingText =
             text.substr(stringSegmentStart, result.index - stringSegmentStart);
-        if (precedingText) {
-          this.processRange(node, precedingText);
+        if (preceedingText) {
+          this.processRange(node, preceedingText);
         }
         stringSegmentStart = result.index + word.length;
         this.processWord(node, word, status);

@@ -194,9 +194,10 @@ goog.inherits(goog.graphics.SvgPathElement, goog.graphics.PathElement);
  * @override
  */
 goog.graphics.SvgPathElement.prototype.setPath = function(path) {
-  /** @suppress {missingRequire} goog.graphics.SvgGraphics */
-  this.getGraphics().setElementAttributes(
-      this.getElement(), {'d': goog.graphics.SvgGraphics.getSvgPath(path)});
+  this.getGraphics().setElementAttributes(this.getElement(), {
+    'd': /** @suppress {missingRequire} */
+        goog.graphics.SvgGraphics.getSvgPath(path)
+  });
 };
 
 

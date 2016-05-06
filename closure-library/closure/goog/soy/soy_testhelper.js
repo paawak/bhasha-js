@@ -17,6 +17,7 @@
  * @author chrishenry@google.com (Chris Henry)
  */
 
+/** @suppress {extraProvide} */
 goog.provide('goog.soy.testHelper');
 goog.setTestOnly('goog.soy.testHelper');
 
@@ -50,16 +51,8 @@ function SanitizedContentSubclass(content, kind) {
 goog.inherits(SanitizedContentSubclass, goog.soy.data.SanitizedContent);
 
 
-/**
- * @param {string} content The text.
- * @param {goog.soy.data.SanitizedContentKind|string} kind The kind of safe
- *     content.
- * @return {!SanitizedContentSubclass}
- */
 function makeSanitizedContent(content, kind) {
-  return new SanitizedContentSubclass(
-      content,
-      /** @type {goog.soy.data.SanitizedContentKind} */ (kind));
+  return new SanitizedContentSubclass(content, kind);
 }
 
 
@@ -71,79 +64,44 @@ function makeSanitizedContent(content, kind) {
 var example = {};
 
 
-/**
- * @param {{name: string}} data
- * @param {null=} opt_sb
- * @param {?Object<string, *>=} opt_injectedData
- * @return {string}
- */
-example.textNodeTemplate = function(data, opt_sb, opt_injectedData) {
-  assertNotNull(data);
-  assertNotUndefined(data);
-  return goog.string.htmlEscape(data.name);
+example.textNodeTemplate = function(opt_data, opt_sb, opt_injectedData) {
+  assertNotNull(opt_data);
+  assertNotUndefined(opt_data);
+  return goog.string.htmlEscape(opt_data.name);
 };
 
 
-/**
- * @param {{name: string}} data
- * @param {null=} opt_sb
- * @param {?Object<string, *>=} opt_injectedData
- * @return {string}
- */
-example.singleRootTemplate = function(data, opt_sb, opt_injectedData) {
-  assertNotNull(data);
-  assertNotUndefined(data);
-  return '<span>' + goog.string.htmlEscape(data.name) + '</span>';
+example.singleRootTemplate = function(opt_data, opt_sb, opt_injectedData) {
+  assertNotNull(opt_data);
+  assertNotUndefined(opt_data);
+  return '<span>' + goog.string.htmlEscape(opt_data.name) + '</span>';
 };
 
 
-/**
- * @param {{name: string}} data
- * @param {null=} opt_sb
- * @param {?Object<string, *>=} opt_injectedData
- * @return {string}
- */
-example.multiRootTemplate = function(data, opt_sb, opt_injectedData) {
-  assertNotNull(data);
-  assertNotUndefined(data);
-  return '<div>Hello</div><div>' + goog.string.htmlEscape(data.name) + '</div>';
+example.multiRootTemplate = function(opt_data, opt_sb, opt_injectedData) {
+  assertNotNull(opt_data);
+  assertNotUndefined(opt_data);
+  return '<div>Hello</div><div>' + goog.string.htmlEscape(opt_data.name) +
+      '</div>';
 };
 
 
-/**
- * @param {{name: string}} data
- * @param {null=} opt_sb
- * @param {?Object<string, *>=} opt_injectedData
- * @return {string}
- */
-example.injectedDataTemplate = function(data, opt_sb, opt_injectedData) {
-  assertNotNull(data);
-  assertNotUndefined(data);
-  return goog.string.htmlEscape(data.name) +
+example.injectedDataTemplate = function(opt_data, opt_sb, opt_injectedData) {
+  assertNotNull(opt_data);
+  assertNotUndefined(opt_data);
+  return goog.string.htmlEscape(opt_data.name) +
       goog.string.htmlEscape(opt_injectedData.name);
 };
 
 
-/**
- * @param {{name: string}} data
- * @param {null=} opt_sb
- * @param {Object<string, *>=} opt_injectedData
- * @return {string}
- */
-example.noDataTemplate = function(data, opt_sb, opt_injectedData) {
-  assertNotNull(data);
-  assertNotUndefined(data);
+example.noDataTemplate = function(opt_data, opt_sb, opt_injectedData) {
+  assertNotNull(opt_data);
+  assertNotUndefined(opt_data);
   return '<div>Hello</div>';
 };
 
 
-/**
- * @param {{name: string}} data
- * @param {null=} opt_sb
- * @param {Object<string, *>=} opt_injectedData
- * @return {!SanitizedContentSubclass}
- */
-example.sanitizedHtmlTemplate = function(data, opt_sb, opt_injectedData) {
+example.sanitizedHtmlTemplate = function(opt_data, opt_sb, opt_injectedData) {
   // Test the SanitizedContent constructor.
   var sanitized = makeSanitizedContent(
       'Hello <b>World</b>', goog.soy.data.SanitizedContentKind.HTML);
@@ -152,51 +110,27 @@ example.sanitizedHtmlTemplate = function(data, opt_sb, opt_injectedData) {
 };
 
 
-/**
- * @param {{name: string}} data
- * @param {null=} opt_sb
- * @param {Object<string, *>=} opt_injectedData
- * @return {!SanitizedContentSubclass}
- */
 example.sanitizedHtmlAttributesTemplate = function(
-    data, opt_sb, opt_injectedData) {
+    opt_data, opt_sb, opt_injectedData) {
   return makeSanitizedContent(
       'foo="bar"', goog.soy.data.SanitizedContentKind.ATTRIBUTES);
 };
 
 
-/**
- * @param {{name: string}} data
- * @param {null=} opt_sb
- * @param {Object<string, *>=} opt_injectedData
- * @return {!SanitizedContentSubclass}
- */
-example.sanitizedCssTemplate = function(data, opt_sb, opt_injectedData) {
+example.sanitizedCssTemplate = function(opt_data, opt_sb, opt_injectedData) {
   return makeSanitizedContent(
       'display:none', goog.soy.data.SanitizedContentKind.CSS);
 };
 
 
-/**
- * @param {{name: string}} data
- * @param {null=} opt_sb
- * @param {Object<string, *>=} opt_injectedData
- * @return {!SanitizedContentSubclass}
- */
-example.unsanitizedTextTemplate = function(data, opt_sb, opt_injectedData) {
+example.unsanitizedTextTemplate = function(opt_data, opt_sb, opt_injectedData) {
   return makeSanitizedContent(
       'I <3 Puppies & Kittens', goog.soy.data.SanitizedContentKind.TEXT);
 };
 
 
-/**
- * @param {{name: string}} data
- * @param {null=} opt_sb
- * @param {Object<string, *>=} opt_injectedData
- * @return {!SanitizedContentSubclass}
- */
 example.templateSpoofingSanitizedContentString = function(
-    data, opt_sb, opt_injectedData) {
+    opt_data, opt_sb, opt_injectedData) {
   return makeSanitizedContent(
       'Hello World',
       // This is to ensure we're using triple-equals against a unique Javascript
@@ -206,24 +140,12 @@ example.templateSpoofingSanitizedContentString = function(
 };
 
 
-/**
- * @param {{name: string}} data
- * @param {null=} opt_sb
- * @param {Object<string, *>=} opt_injectedData
- * @return {string}
- */
-example.tableRowTemplate = function(data, opt_sb, opt_injectedData) {
+example.tableRowTemplate = function(opt_data, opt_sb, opt_injectedData) {
   return '<tr><td></td></tr>';
 };
 
 
-/**
- * @param {{name: string}} data
- * @param {null=} opt_sb
- * @param {Object<string, *>=} opt_injectedData
- * @return {string}
- */
-example.colGroupTemplateCaps = function(data, opt_sb, opt_injectedData) {
+example.colGroupTemplateCaps = function(opt_data, opt_sb, opt_injectedData) {
   return '<COLGROUP></COLGROUP>';
 };
 

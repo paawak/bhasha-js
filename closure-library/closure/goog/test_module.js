@@ -22,7 +22,7 @@ goog.module.declareLegacyNamespace();
 
 
 /** @suppress {extraRequire} */
-var testModuleDep = goog.require('goog.test_module_dep');
+goog.require('goog.test_module_dep');
 
 
 

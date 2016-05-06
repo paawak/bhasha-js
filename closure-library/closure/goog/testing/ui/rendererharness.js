@@ -66,7 +66,7 @@ goog.testing.ui.RendererHarness = function(
   this.renderHtml_ = renderParent.innerHTML;
 
   /**
-   * The parent of the element where controls will be decorated.
+   * Teh parent of the element where controls will be decorated.
    * @type {Element}
    * @private
    */

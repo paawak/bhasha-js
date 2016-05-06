@@ -21,7 +21,6 @@
  *
  */
 
-// clang-format off
 
 /**
  * Namespace for native country and lanugage names

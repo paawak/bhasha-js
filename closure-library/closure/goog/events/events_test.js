@@ -423,14 +423,14 @@ function testUnlistenAfterListenOnce() {
 }
 
 function testEventBubblingWithReentrantDispatch_bubbling() {
-  runEventPropagationWithReentrantDispatch(false);
+  runEventPropogationWithReentrantDispatch(false);
 }
 
 function testEventBubblingWithReentrantDispatch_capture() {
-  runEventPropagationWithReentrantDispatch(true);
+  runEventPropogationWithReentrantDispatch(true);
 }
 
-function runEventPropagationWithReentrantDispatch(useCapture) {
+function runEventPropogationWithReentrantDispatch(useCapture) {
   var eventType = 'test-event-type';
 
   var child = et1;
@@ -459,15 +459,15 @@ function runEventPropagationWithReentrantDispatch(useCapture) {
   assertEquals(2, secondListener.getCallCount());
 }
 
-function testEventPropagationWhenListenerRemoved_bubbling() {
-  runEventPropagationWhenListenerRemoved(false);
+function testEventPropogationWhenListenerRemoved_bubbling() {
+  runEventPropogationWhenListenerRemoved(false);
 }
 
-function testEventPropagationWhenListenerRemoved_capture() {
-  runEventPropagationWhenListenerRemoved(true);
+function testEventPropogationWhenListenerRemoved_capture() {
+  runEventPropogationWhenListenerRemoved(true);
 }
 
-function runEventPropagationWhenListenerRemoved(useCapture) {
+function runEventPropogationWhenListenerRemoved(useCapture) {
   var eventType = 'test-event-type';
 
   var child = et1;
@@ -487,15 +487,15 @@ function runEventPropagationWhenListenerRemoved(useCapture) {
   assertEquals(1, secondListener.getCallCount());
 }
 
-function testEventPropagationWhenListenerAdded_bubbling() {
-  runEventPropagationWhenListenerAdded(false);
+function testEventPropogationWhenListenerAdded_bubbling() {
+  runEventPropogationWhenListenerAdded(false);
 }
 
-function testEventPropagationWhenListenerAdded_capture() {
-  runEventPropagationWhenListenerAdded(true);
+function testEventPropogationWhenListenerAdded_capture() {
+  runEventPropogationWhenListenerAdded(true);
 }
 
-function runEventPropagationWhenListenerAdded(useCapture) {
+function runEventPropogationWhenListenerAdded(useCapture) {
   var eventType = 'test-event-type';
 
   var child = et1;
@@ -516,15 +516,15 @@ function runEventPropagationWhenListenerAdded(useCapture) {
   assertEquals(1, secondListener.getCallCount());
 }
 
-function testEventPropagationWhenListenerAddedAndRemoved_bubbling() {
-  runEventPropagationWhenListenerAddedAndRemoved(false);
+function testEventPropogationWhenListenerAddedAndRemoved_bubbling() {
+  runEventPropogationWhenListenerAddedAndRemoved(false);
 }
 
-function testEventPropagationWhenListenerAddedAndRemoved_capture() {
-  runEventPropagationWhenListenerAddedAndRemoved(true);
+function testEventPropogationWhenListenerAddedAndRemoved_capture() {
+  runEventPropogationWhenListenerAddedAndRemoved(true);
 }
 
-function runEventPropagationWhenListenerAddedAndRemoved(useCapture) {
+function runEventPropogationWhenListenerAddedAndRemoved(useCapture) {
   var eventType = 'test-event-type';
 
   var child = et1;

@@ -69,28 +69,6 @@ goog.labs.mock.mockFunction = function(func) {
 
 
 /**
- * Mocks a given constructor.
- *
- * @param {!Function} ctor A constructor function to be mocked.
- * @return {!Function} The mocked constructor.
- */
-goog.labs.mock.mockConstructor = function(ctor) {
-  var mockCtor = goog.labs.mock.mockFunction(ctor);
-
-  // Copy class members from the real constructor to the mock. Do not copy
-  // the closure superClass_ property (see goog.inherits), the built-in
-  // prototype property, or properties added to Function.prototype
-  for (var property in ctor) {
-    if (property != 'superClass_' && property != 'prototype' &&
-        ctor.hasOwnProperty(property)) {
-      mockCtor[property] = ctor[property];
-    }
-  }
-  return mockCtor;
-};
-
-
-/**
  * Spies on a given object.
  *
  * @param {!Object} obj The object to be spied on.
@@ -378,13 +356,13 @@ goog.labs.mock.MockManager_ = function() {
  *
  * @param {string} methodName The name of the method being bound.
  * @param {...*} var_args The arguments to the method.
- * @return {!goog.labs.mock.StubBinder} The stub binder.
+ * @return {!goog.labs.mock.StubBinder_} The stub binder.
  * @private
  */
 goog.labs.mock.MockManager_.prototype.handleMockCall_ = function(
     methodName, var_args) {
   var args = goog.array.slice(arguments, 1);
-  return new goog.labs.mock.StubBinderImpl_(this, methodName, args);
+  return new goog.labs.mock.StubBinder_(this, methodName, args);
 };
 
 
@@ -405,46 +383,43 @@ goog.labs.mock.MockManager_.prototype.getMockedItem = function() {
  * @param {?string} methodName The name of the stubbed method.
  * @param {!Array<?>} args The arguments passed to the method.
  * @param {!Function} func The stub function.
- * @return {!Array<?>} The array of stubs for further sequential stubs to be
- *     appended.
+ *
  */
 goog.labs.mock.MockManager_.prototype.addBinding = function(
     methodName, args, func) {
   var binding = new goog.labs.mock.MethodBinding_(methodName, args, func);
-  var sequentialStubsArray = [binding];
-  goog.array.insertAt(this.methodBindings, sequentialStubsArray, 0);
-  return sequentialStubsArray;
+  this.methodBindings.push(binding);
 };
 
 
 /**
  * Returns a stub, if defined, for the method name and arguments passed in.
  * If there are multiple stubs for this method name and arguments, then
- * the most recent binding will be used.
- *
- * If the next binding is a sequence of stubs, then they'll be returned
- * in order until only one is left, at which point it will be returned for every
- * subsequent call.
+ * the first one is returned and removed from the list.
  *
  * @param {string} methodName The name of the stubbed method.
  * @param {!Array<?>} args The arguments passed to the method.
- * @return {?Function} The stub function or null.
+ * @return {Function} The stub function or undefined.
  * @protected
  */
 goog.labs.mock.MockManager_.prototype.getNextBinding = function(
     methodName, args) {
-  var bindings = goog.array.find(this.methodBindings, function(bindingArray) {
-    return bindingArray[0].matches(
-        methodName, args, false /* isVerification */);
+  var first = -1;
+  var count = 0;
+  var stub = null;
+  goog.array.forEach(this.methodBindings, function(binding, i) {
+    if (binding.matches(methodName, args, false /* isVerification */)) {
+      count++;
+      if (goog.isNull(stub)) {
+        first = i;
+        stub = binding;
+      }
+    }
   });
-  if (bindings == null) {
-    return null;
+  if (count > 1) {
+    goog.array.removeAt(this.methodBindings, first);
   }
-
-  if (bindings.length > 1) {
-    return bindings.shift().getStub();
-  }
-  return bindings[0].getStub();
+  return stub && stub.getStub();
 };
 
 
@@ -702,68 +677,30 @@ goog.inherits(goog.labs.mock.MockFunctionManager_, goog.labs.mock.MockManager_);
  */
 goog.labs.mock.MockFunctionManager_.prototype.useMockedFunctionName_ = function(
     nextFunc) {
-  var mockFunctionManager = this;
-  // Avoid using 'this' because this function may be called with 'new'.
-  return function(var_args) {
-    var args = goog.array.clone(arguments);
-    var name = '#mockFor<' +
-        goog.labs.mock.getFunctionName_(mockFunctionManager.func_) + '>';
+  return goog.bind(function(var_args) {
+    var args = goog.array.slice(arguments, 0);
+    var name = '#mockFor<' + goog.labs.mock.getFunctionName_(this.func_) + '>';
     goog.array.insertAt(args, name, 0);
-    return nextFunc.apply(mockFunctionManager, args);
-  };
+    return nextFunc.apply(this, args);
+  }, this);
 };
 
 
+
 /**
- * A stub binder is an object that helps define the stub by binding
+ * The stub binder is the object that helps define the stubs by binding
  * method name to the stub method.
- * @interface
- */
-goog.labs.mock.StubBinder = function() {};
-
-
-/**
- * Defines the function to be called for the method name and arguments bound
- * to this {@code StubBinder}.
- *
- * If {@code then} or {@code thenReturn} has been previously called
- * on this {@code StubBinder} then the given stub {@code func} will be called
- * only after the stubs passed previously have been called.  Afterwards,
- * if no other calls are made to {@code then} or {@code thenReturn} for this
- * {@code StubBinder} then the given {@code func} will be used for every further
- * invocation.
- * See #when for complete examples.
- * TODO(user): Add support for the 'Answer' interface.
- *
- * @param {!Function} func The function to call.
- * @return {!goog.labs.mock.StubBinder} Returns itself for chaining.
- */
-goog.labs.mock.StubBinder.prototype.then = goog.abstractMethod;
-
-
-/**
- * Defines the constant return value for the stub represented by this
- * {@code StubBinder}.
- *
- * @param {*} value The value to return.
- * @return {!goog.labs.mock.StubBinder} Returns itself for chaining.
- */
-goog.labs.mock.StubBinder.prototype.thenReturn = goog.abstractMethod;
-
-
-/**
- * A {@code StubBinder} which uses {@code MockManager_} to manage stub
- * bindings.
  *
  * @param {!goog.labs.mock.MockManager_}
  *   mockManager The mock manager.
  * @param {?string} name The method name.
  * @param {!Array<?>} args The other arguments to the method.
  *
- * @implements {goog.labs.mock.StubBinder}
- * @private @constructor @struct @final
+ * @constructor
+ * @struct
+ * @private
  */
-goog.labs.mock.StubBinderImpl_ = function(mockManager, name, args) {
+goog.labs.mock.StubBinder_ = function(mockManager, name, args) {
   /**
    * The mock manager instance.
    * @type {!goog.labs.mock.MockManager_}
@@ -784,36 +721,29 @@ goog.labs.mock.StubBinderImpl_ = function(mockManager, name, args) {
    * @private
    */
   this.args_ = args;
-
-  /**
-   * Stores a reference to the list of stubs to allow chaining sequential
-   * stubs.
-   * @private {!Array<?>}
-   */
-  this.sequentialStubsArray_ = [];
 };
 
 
 /**
- * @override
+ * Defines the stub to be called for the method name and arguments bound
+ * earlier.
+ * TODO(user): Add support for the 'Answer' interface.
+ *
+ * @param {!Function} func The stub.
  */
-goog.labs.mock.StubBinderImpl_.prototype.then = function(func) {
-  if (this.sequentialStubsArray_.length) {
-    this.sequentialStubsArray_.push(
-        new goog.labs.mock.MethodBinding_(this.name_, this.args_, func));
-  } else {
-    this.sequentialStubsArray_ =
-        this.mockManager_.addBinding(this.name_, this.args_, func);
-  }
-  return this;
+goog.labs.mock.StubBinder_.prototype.then = function(func) {
+  this.mockManager_.addBinding(this.name_, this.args_, func);
 };
 
 
 /**
- * @override
+ * Defines the stub to return a specific value for a method name and arguments.
+ *
+ * @param {*} value The value to return.
  */
-goog.labs.mock.StubBinderImpl_.prototype.thenReturn = function(value) {
-  return this.then(goog.functions.constant(value));
+goog.labs.mock.StubBinder_.prototype.thenReturn = function(value) {
+  this.mockManager_.addBinding(
+      this.name_, this.args_, goog.functions.constant(value));
 };
 
 
@@ -824,23 +754,8 @@ goog.labs.mock.StubBinderImpl_.prototype.thenReturn = function(value) {
  * var mockObj = goog.labs.mock.mock(objectBeingMocked);
  * goog.labs.mock.when(mockObj).getFoo(3).thenReturn(4);
  *
- * Subsequent calls to {@code when} take precedence over earlier calls, allowing
- * users to set up default stubs in setUp methods and then override them in
- * individual tests.
- *
- * If a user wants sequential calls to their stub to return different
- * values, they can chain calls to {@code then} or {@code thenReturn} as
- * follows:
- *
- * var mockObj = goog.labs.mock.mock(objectBeingMocked);
- * goog.labs.mock.when(mockObj).getFoo(3)
- *     .thenReturn(4)
- *     .then(function() {
- *         throw Error('exceptional case');
- *     });
- *
  * @param {!Object} mockObject The mocked object.
- * @return {!goog.labs.mock.StubBinder} The property binder.
+ * @return {!goog.labs.mock.StubBinder_} The property binder.
  */
 goog.labs.mock.when = function(mockObject) {
   goog.asserts.assert(mockObject.$stubBinder, 'Stub binder cannot be null!');

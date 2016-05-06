@@ -845,9 +845,9 @@ goog.ui.ac.Renderer.prototype.hiliteMatchingText_ = function(
     var text = node.nodeValue;
 
     // Create a regular expression to match a token at the beginning of a line
-    // or preceded by non-alpha-numeric characters. Note: token could have |
+    // or preceeded by non-alpha-numeric characters. Note: token could have |
     // operators in it, so we need to parenthesise it before adding \b to it.
-    // or preceded by non-alpha-numeric characters
+    // or preceeded by non-alpha-numeric characters
     //
     // NOTE(user): When using word matches, this used to have
     // a (^|\\W+) clause where it now has \\b but it caused various

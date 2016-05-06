@@ -42,8 +42,6 @@ goog.require('goog.fx.Transition');
 goog.require('goog.style');
 goog.require('goog.style.bidi');
 
-goog.forwardDeclare('goog.events.EventHandler');
-
 
 
 /**

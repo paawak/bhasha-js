@@ -906,7 +906,9 @@ if (goog.DEPENDENCIES_ENABLED) {
     // synchronous XHRs, put each load in its own script block.
     var bootstrap = 'goog.retrieveAndExecModule_("' + src + '");';
 
-    goog.importScript_('', bootstrap);
+    if (goog.importScript_('', bootstrap)) {
+      goog.dependencies_.written[src] = true;
+    }
   };
 
 
@@ -2446,11 +2448,8 @@ goog.defineClass.ClassDescriptor;
 
 
 /**
- * @define {boolean} Whether the instances returned by goog.defineClass should
- *     be sealed when possible.
- *
- * When sealing is disabled the constructor function will not be wrapped by
- * goog.defineClass, making it incompatible with ES6 class methods.
+ * @define {boolean} Whether the instances returned by
+ * goog.defineClass should be sealed when possible.
  */
 goog.define('goog.defineClass.SEAL_CLASS_INSTANCES', goog.DEBUG);
 
@@ -2466,46 +2465,30 @@ goog.define('goog.defineClass.SEAL_CLASS_INSTANCES', goog.DEBUG);
  * @private
  */
 goog.defineClass.createSealingConstructor_ = function(ctr, superClass) {
-  if (!goog.defineClass.SEAL_CLASS_INSTANCES) {
-    // Do now wrap the constructor when sealing is disabled. Angular code
-    // depends on this for injection to work properly.
-    return ctr;
-  }
-
-  // Compute whether the constructor is sealable at definition time, rather
-  // than when the instance is being constructed.
-  var superclassSealable = !goog.defineClass.isUnsealable_(superClass);
-
-  /**
-   * @this {Object}
-   * @return {?}
-   */
-  var wrappedCtr = function() {
-    // Don't seal an instance of a subclass when it calls the constructor of
-    // its super class as there is most likely still setup to do.
-    var instance = ctr.apply(this, arguments) || this;
-    instance[goog.UID_PROPERTY_] = instance[goog.UID_PROPERTY_];
-
-    if (this.constructor === wrappedCtr && superclassSealable &&
-        Object.seal instanceof Function) {
-      Object.seal(instance);
+  if (goog.defineClass.SEAL_CLASS_INSTANCES &&
+      Object.seal instanceof Function) {
+    // Don't seal subclasses of unsealable-tagged legacy classes.
+    if (superClass && superClass.prototype &&
+        superClass.prototype[goog.UNSEALABLE_CONSTRUCTOR_PROPERTY_]) {
+      return ctr;
     }
-    return instance;
-  };
-
-  return wrappedCtr;
-};
-
-
-/**
- * @param {Function} ctr The constructor to test.
- * @returns {boolean} Whether the constructor has been tagged as unsealable
- *     using goog.tagUnsealableClass.
- * @private
- */
-goog.defineClass.isUnsealable_ = function(ctr) {
-  return ctr && ctr.prototype &&
-      ctr.prototype[goog.UNSEALABLE_CONSTRUCTOR_PROPERTY_];
+    /**
+     * @this {Object}
+     * @return {?}
+     */
+    var wrappedCtr = function() {
+      // Don't seal an instance of a subclass when it calls the constructor of
+      // its super class as there is most likely still setup to do.
+      var instance = ctr.apply(this, arguments) || this;
+      instance[goog.UID_PROPERTY_] = instance[goog.UID_PROPERTY_];
+      if (this.constructor === wrappedCtr) {
+        Object.seal(instance);
+      }
+      return instance;
+    };
+    return wrappedCtr;
+  }
+  return ctr;
 };
 
 
@@ -2554,7 +2537,7 @@ goog.defineClass.applyProperties_ = function(target, source) {
 
 /**
  * Sealing classes breaks the older idiom of assigning properties on the
- * prototype rather than in the constructor. As such, goog.defineClass
+ * prototype rather than in the constructor.  As such, goog.defineClass
  * must not seal subclasses of these old-style classes until they are fixed.
  * Until then, this marks a class as "broken", instructing defineClass
  * not to seal subclasses.

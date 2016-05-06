@@ -25,6 +25,7 @@ goog.require('goog.testing.MockRandom');
 goog.require('goog.testing.PropertyReplacer');
 goog.require('goog.testing.TestCase');
 goog.require('goog.testing.jsunit');
+goog.require('goog.testing.mockmatchers.ObjectEquals');
 
 
 // Dual of fail().
@@ -715,6 +716,12 @@ function testFailOnUnreportedAsserts_SwallowedExceptionViaPromise() {
 function testFailOnUnreportedAsserts_NotForAssertThrowsJsUnitException() {
   return verifyTestOutcomeForFailOnUnreportedAssertsFlag(true, function() {
     assertThrowsJsUnitException(function() { assertTrue(false); });
+  });
+}
+
+function testFailOnUnreportedAsserts_NotForMockMatchersObjectEquals() {
+  return verifyTestOutcomeForFailOnUnreportedAssertsFlag(true, function() {
+    new goog.testing.mockmatchers.ObjectEquals(true).matches(false);
   });
 }
 

@@ -84,7 +84,7 @@ function testOperaInit() {
   assertTrue(goog.userAgent.OPERA);
   assertEquals('11.10', goog.userAgent.VERSION);
 
-  // Check Opera + Blink versions are detected as Chromium
+  // Check Opera + Blink versions are detected
   mockGlobal = {
     'navigator': {'userAgent': goog.labs.userAgent.testAgents.OPERA_15},
   };
@@ -95,7 +95,7 @@ function testOperaInit() {
 
   goog.labs.userAgent.util.setUserAgent(null);
   goog.userAgentTestUtil.reinitializeUserAgent();
-  // TODO(johnlenz): Chrome/Blink is miscategorized as Webkit
+  assertTrue(goog.userAgent.OPERA);
   assertTrue(goog.userAgent.WEBKIT);
   assertEquals('537.36', goog.userAgent.VERSION);
 }
