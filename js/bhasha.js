@@ -38,11 +38,18 @@ bhasha.indic.IndicEditor.prototype.replaceWithindicStrings = function(keyEvent) 
 	  var indicTextEditor = keyEvent.target;
 	  var selectionStart =  indicTextEditor.selectionStart;
 	  var selectionEnd =  indicTextEditor.selectionEnd;
-	  var charTyped = keyEvent.charCode;
-	  var indicString = indicStringMap[String.fromCharCode(charTyped)];
+	  var charTyped = String.fromCharCode(keyEvent.charCode);
+	  var indicString = indicStringMap[charTyped];
 	  console.log("***selectionStart: " + selectionStart + ", selectionEnd: " + selectionEnd + ", charTyped: " + charTyped + ", indicString: " + indicString);
-      if (indicString) {		
+	  
+	  if (keyTypedHistory.length == 3) {
+		  keyTypedHistory = "";
+	  }
+	  
+      if (indicString) {	
+		keyTypedHistory += charTyped;
 		console.log("replacing roman chars with indic chars");
+		console.log("keyTypedHistory: " + keyTypedHistory);
 		keyEvent.preventDefault();
 		var existingText = indicTextEditor.value;
 		
@@ -51,16 +58,18 @@ bhasha.indic.IndicEditor.prototype.replaceWithindicStrings = function(keyEvent) 
 		} else {
 			var textBeforeCaret = existingText.slice(0, selectionStart);
 			var textAfterCaret = existingText.slice(selectionEnd);	
-			console.log("textBeforeCaret=" + textBeforeCaret);
-			console.log("textAfterCaret=" + textAfterCaret);
+			//console.log("textBeforeCaret=" + textBeforeCaret);
+			//console.log("textAfterCaret=" + textAfterCaret);
 			indicTextEditor.value = textBeforeCaret + indicString + textAfterCaret;
 			indicTextEditor.setSelectionRange(selectionStart + 1, selectionStart + 1);
 		}
 				
-      }
+      } else {
+		  keyTypedHistory = "";
+	  }
 };
 
-
+var keyTypedHistory = "";
 
 
 var indicStringMap = {
