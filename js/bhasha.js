@@ -1,11 +1,6 @@
-// Copyright 2008 Google Inc. All Rights Reserved.
-
-goog.provide('bhasha.indic.IndicEditor');
 goog.provide('bhasha.indic.attachEditor');
 
 goog.require('goog.events.KeyHandler');
-goog.require('goog.events.KeyEvent');
-
 
 
 /**
@@ -14,7 +9,6 @@ goog.require('goog.events.KeyEvent');
  * @param {Element} indicTextEditor The text-area where Indic Text is to be typed.
  */
 bhasha.indic.attachEditor = function(indicTextEditor) {
-	//alert("hhhh: " + noteContainer);
     var indicEditor = new bhasha.indic.IndicEditor(indicTextEditor);
 	indicEditor.attachIndicListener();    
 };
@@ -33,10 +27,10 @@ bhasha.indic.IndicEditor = function(indicTextEditor) {
  */
 bhasha.indic.IndicEditor.prototype.attachIndicListener = function() {
   var keyHandler = new goog.events.KeyHandler(this.indicTextEditor, true);
-  goog.events.listen(keyHandler, goog.events.KeyHandler.EventType.KEY, this.replaceWithIndicChars);
+  goog.events.listen(keyHandler, goog.events.KeyHandler.EventType.KEY, this.replaceWithindicStrings);
 };
 
-var indicCharMap = {
+var indicStringMap = {
 	'y' : '\u09df',
 	'0' : '\u09e6', 
 	'1' : '\u09e7', 
@@ -53,23 +47,31 @@ var indicCharMap = {
 
 /**
  * Event handler for KeyPressed. Replaces English chars with Indic chars
- * @param {goog.events.Event} e The event object.
+ * @param {goog.events.Event} keyEvent The event object.
  */
-bhasha.indic.IndicEditor.prototype.replaceWithIndicChars = function(keyEvent) {
+bhasha.indic.IndicEditor.prototype.replaceWithindicStrings = function(keyEvent) {
 	  var indicTextEditor = keyEvent.target;
 	  var selectionStart =  indicTextEditor.selectionStart;
 	  var selectionEnd =  indicTextEditor.selectionEnd;
 	  var charTyped = keyEvent.charCode;
-	  var indicChar = indicCharMap[String.fromCharCode(charTyped)];
-	  console.log("***selectionStart: " + selectionStart + ", selectionEnd: " + selectionEnd + ", charTyped: " + charTyped + ", indicChar: " + indicChar);
-      if (charTyped == goog.events.KeyCodes.ONE) {		
-		console.log("***trying to stop propagation ");
+	  var indicString = indicStringMap[String.fromCharCode(charTyped)];
+	  console.log("***selectionStart: " + selectionStart + ", selectionEnd: " + selectionEnd + ", charTyped: " + charTyped + ", indicString: " + indicString);
+      if (indicString) {		
+		console.log("replacing roman chars with indic chars");
 		keyEvent.preventDefault();
-		//create a new dummy key-event
-		//var listener = new goog.events.Listener(null, null, indicTextEditor, "keypress", false, null);
-		//var dummyKeyEvent = new goog.events.KeyEvent(goog.events.KeyCodes.TWO, goog.events.KeyCodes.TWO, true, new goog.events.BrowserEvent(new goog.events.Event("keypress", indicTextEditor), indicTextEditor));
-		//goog.events.dispatchEvent(listener, dummyKeyEvent);
-		//keyEvent.init(dummyKeyEvent, indicTextEditor);
+		var existingText = indicTextEditor.value;
+		
+		if (existingText.length == selectionStart) {
+			indicTextEditor.value = existingText + indicString;
+		} else {
+			var textBeforeCaret = existingText.slice(0, selectionStart);
+			var textAfterCaret = existingText.slice(selectionEnd);	
+			console.log("textBeforeCaret=" + textBeforeCaret);
+			console.log("textAfterCaret=" + textAfterCaret);
+			indicTextEditor.value = textBeforeCaret + indicString + textAfterCaret;
+			indicTextEditor.setSelectionRange(selectionStart + 1, selectionStart + 1);
+		}
+				
       }
 };
 
