@@ -42,6 +42,12 @@ bhasha.indic.IndicEditor.prototype.attachIndicListener = function() {
  *                keyEvent The event object.
  */
 bhasha.indic.IndicEditor.prototype.replaceWithindicStrings = function(keyEvent) {
+
+    if (keyEvent.ctrlKey) {
+	keyTypedHistory = "";
+	return;
+    }
+
     var indicTextEditor = keyEvent.target;
     var selectionStart = indicTextEditor.selectionStart;
     var selectionEnd = indicTextEditor.selectionEnd;
